@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Никита Фельдбуш](https://up.htmlacademy.ru/javascript/21/user/537493).
-* Наставник: `Неизвестно`.
+* Наставник: [Александр Духовняк](https://htmlacademy.ru/profile/id126025).
 
 ---
 
