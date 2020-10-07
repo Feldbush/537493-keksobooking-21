@@ -10,15 +10,13 @@ const CHECKOUT_TIMES = [`12:00`, `13:00`, `14:00`];
 const FEATURES = [`wifi`, `dishwasher`, `parking`, `washer`, `elevator`, `conditioner`];
 const PHOTOS_LINKS = [`http://o0.github.io/assets/images/tokyo/hotel1.jpg`, `http://o0.github.io/assets/images/tokyo/hotel2.jpg`, `http://o0.github.io/assets/images/tokyo/hotel3.jpg`];
 const MAP_NODE = document.querySelector(`.map`);
-const PIN_LOCATION_Y = {
+const PIN_LOCATION = {
   yMin: 130,
   yMax: 630,
-  xMin: 0,
-  xMax: MAP_NODE.offsetWidth
+  xMin: 50,
+  xMax: MAP_NODE.offsetWidth - 100
 };
 
-// show map
-MAP_NODE.classList.remove(`map--faded`);
 
 function getRandomInteger(min, max) {
   return Math.round(min - 0.5 + Math.random() * (max - min + 1));
@@ -50,7 +48,7 @@ function createOffers() {
   for (let i = 0; i < QUANTITY_PINS; i++) {
     let offer = {};
 
-    offer.title = TITLE_OFFER + ` ` + i;
+    offer.title = TITLE_OFFER;
     offer.price = getRandomInteger(1000, 4500);
     offer.type = OFFER_TYPE[getRandomInteger(0, OFFER_TYPE.length - 1)];
     offer.rooms = getRandomInteger(1, MAX_QUANTITY_ROOMS);
@@ -83,8 +81,8 @@ function craeateLocations() {
 
   for (let i = 0; i < QUANTITY_PINS; i++) {
     let location = {
-      x: getRandomInteger(PIN_LOCATION_Y.xMin, PIN_LOCATION_Y.xMax),
-      y: getRandomInteger(PIN_LOCATION_Y.yMin, PIN_LOCATION_Y.yMax)
+      x: getRandomInteger(PIN_LOCATION.xMin, PIN_LOCATION.xMax),
+      y: getRandomInteger(PIN_LOCATION.yMin, PIN_LOCATION.yMax)
     };
 
     locations.push(location);
@@ -94,7 +92,7 @@ function craeateLocations() {
 }
 
 
-function createMockPin() {
+function createMockPinData() {
   const authors = createAuthors();
   const offers = createOffers();
   const locations = craeateLocations();
@@ -108,7 +106,58 @@ function createMockPin() {
     pins.push(pin);
   }
 
-  console.log(pins);
+  return pins;
 }
 
-createMockPin();
+
+function createPinNode(pinData) {
+  const pinTemplate = document.querySelector(`#pin`).content.children[0];
+
+  const pin = pinTemplate.cloneNode(true);
+  const pinImg = pin.querySelector(`img`);
+
+  pinImg.src = pinData.author.avatar;
+  pinImg.alt = pinData.offer.title;
+  pin.style.left = pinData.location.x + `px`;
+  pin.style.top = pinData.location.y + `px`;
+
+  return pin;
+}
+
+
+function fixPositiPin(pin) {
+  pin.style.left = Number(pin.style.left.replace(/[^\d;]/g, ``)) - pin.offsetWidth / 2 + `px`;
+  pin.style.top = Number(pin.style.top.replace(/[^\d;]/g, ``)) - pin.offsetHeight + `px`;
+}
+
+
+function appendPins(pinsData, placeInsertion) {
+  const fragment = document.createDocumentFragment();
+  const temporaryСontainer = fragment;
+
+  for (let index = 0; index < pinsData.length; index++) {
+    temporaryСontainer.append(createPinNode(pinsData[index]));
+  }
+
+  placeInsertion.append(temporaryСontainer.cloneNode(true));
+  const pinCssClass = placeInsertion.lastChild.className;
+
+  // Беру количество вставленных элементов с конца контейнера и фиксирую положение их положение таким образом,
+  // чтобы метка указывала на точку указанную в pinData.location.x, pinData.location.y
+  for (let i = temporaryСontainer.children.length; i >= 1; i--) {
+    let currentElement = placeInsertion.querySelector(`.${pinCssClass}:nth-last-child(${i})`);
+    fixPositiPin(currentElement);
+  }
+
+}
+
+
+// показываю карту
+MAP_NODE.classList.remove(`map--faded`);
+
+
+// Генерирую пины и вставляю на страницу
+const mockPinsData = createMockPinData();
+const mapPinsContainer = document.querySelector(`.map__pins`);
+appendPins(mockPinsData, mapPinsContainer);
+
