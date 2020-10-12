@@ -1,20 +1,22 @@
 'use strict';
 
-const QUANTITY_PINS = 8;
-const TITLE_OFFER = `Супер классный, новый, модный отель`;
-const OFFER_TYPE = [`palace`, `flat`, `house`, `bungalow`];
-const MAX_QUANTITY_ROOMS = 5;
-const MAX_QUANTITY_GUEST = 7;
-const CHECKIN_TIMES = [`12:00`, `13:00`, `14:00`];
-const CHECKOUT_TIMES = [`12:00`, `13:00`, `14:00`];
-const FEATURES = [`wifi`, `dishwasher`, `parking`, `washer`, `elevator`, `conditioner`];
-const PHOTOS_LINKS = [`http://o0.github.io/assets/images/tokyo/hotel1.jpg`, `http://o0.github.io/assets/images/tokyo/hotel2.jpg`, `http://o0.github.io/assets/images/tokyo/hotel3.jpg`];
-const MAP_NODE = document.querySelector(`.map`);
-const PIN_LOCATION = {
+const quantityPins = 8;
+const titlesOffer = [`Супер классный, новый, модный отель`, `Вот это отель`, `Гостиница так гостиница`];
+const descriptions = [`Лучший отель на этой планете Лучший отель на этой планете Лучший отель на этой планете`, `Бомба БомбаБомбаБомбаБомбаБомбаБомба`, `Шикарно Шикарно Шикарно Шикарно`];
+const offerType = [`palace`, `flat`, `house`, `bungalow`];
+const maxQuantityRooms = 5;
+const maxQuantityGuest = 7;
+const checkinTimes = [`12:00`, `13:00`, `14:00`];
+const checkoutTimes = [`12:00`, `13:00`, `14:00`];
+const features = [`wifi`, `dishwasher`, `parking`, `washer`, `elevator`, `conditioner`];
+const photosLinks = [`http://o0.github.io/assets/images/tokyo/hotel1.jpg`, `http://o0.github.io/assets/images/tokyo/hotel2.jpg`, `http://o0.github.io/assets/images/tokyo/hotel3.jpg`];
+const mapNode = document.querySelector(`.map`);
+const pinTemplate = document.querySelector(`#pin`).content.querySelector(`.map__pin`);
+const pinLocation = {
   yMin: 130,
   yMax: 630,
   xMin: 50,
-  xMax: MAP_NODE.offsetWidth - 100
+  xMax: mapNode.offsetWidth - 100
 };
 
 
@@ -23,96 +25,44 @@ function getRandomInteger(min, max) {
 }
 
 
-function createAuthors() {
-  let authorNumbers = new Set();
-  let authors = [];
-
-  while (authorNumbers.size < QUANTITY_PINS) {
-    let randomInteger = String(getRandomInteger(1, QUANTITY_PINS));
-    authorNumbers.add(randomInteger);
-  }
-
-  authorNumbers.forEach((authorNumber) => {
-    let author = {};
-    author.avatar = `img/avatars/user0${authorNumber}.png`;
-    authors.push(author);
-  });
-
-  return authors;
-}
-
-
-function createOffers() {
-  let offers = [];
-
-  for (let i = 0; i < QUANTITY_PINS; i++) {
-    let offer = {};
-
-    offer.title = TITLE_OFFER;
-    offer.price = getRandomInteger(1000, 4500);
-    offer.type = OFFER_TYPE[getRandomInteger(0, OFFER_TYPE.length - 1)];
-    offer.rooms = getRandomInteger(1, MAX_QUANTITY_ROOMS);
-    offer.guests = getRandomInteger(1, MAX_QUANTITY_GUEST);
-    offer.checkin = getRandomInteger(1, CHECKIN_TIMES.length - 1);
-    offer.checkout = getRandomInteger(1, CHECKOUT_TIMES.length - 1);
-    offer.description = `Лучший отель на этой планете Лучший отель на этой планете Лучший отель на этой планете`;
-
-    let nonrepeatingFeatures = new Set();
-    for (let featuresIndex = 0; featuresIndex < FEATURES.length; featuresIndex++) {
-      nonrepeatingFeatures.add(FEATURES[getRandomInteger(0, FEATURES.length - 1)]);
-    }
-    offer.features = Array.from(nonrepeatingFeatures);
-
-    let nonrepeatingPhotos = new Set();
-    for (let photosLinksIndex = 0; photosLinksIndex < PHOTOS_LINKS.length; photosLinksIndex++) {
-      nonrepeatingPhotos.add(PHOTOS_LINKS[getRandomInteger(0, PHOTOS_LINKS.length - 1)]);
-    }
-    offer.photos = Array.from(nonrepeatingPhotos);
-
-    offers.push(offer);
-  }
-
-  return offers;
-}
-
-
-function craeateLocations() {
-  let locations = [];
-
-  for (let i = 0; i < QUANTITY_PINS; i++) {
-    let location = {
-      x: getRandomInteger(PIN_LOCATION.xMin, PIN_LOCATION.xMax),
-      y: getRandomInteger(PIN_LOCATION.yMin, PIN_LOCATION.yMax)
-    };
-
-    locations.push(location);
-  }
-
-  return locations;
+function getRandomElementArray(array) {
+  return array[getRandomInteger(0, array.length - 1)];
 }
 
 
 function createMockPinData() {
-  const authors = createAuthors();
-  const offers = createOffers();
-  const locations = craeateLocations();
-  let pins = [];
+  const mockPinsData = [];
+  for (let index = 0; index < quantityPins; index++) {
+    const mockPinData = {
+      author: {
+        avatar: `img/avatars/user0${index + 1}.png`
+      },
+      offer: {
+        title: getRandomElementArray(titlesOffer),
+        price: getRandomInteger(1000, 4500),
+        type: getRandomElementArray(offerType),
+        rooms: getRandomInteger(1, maxQuantityRooms),
+        guests: getRandomInteger(1, maxQuantityGuest),
+        checkin: getRandomElementArray(checkinTimes),
+        checkout: getRandomElementArray(checkoutTimes),
+        features: features.slice(0, getRandomInteger(1, features.length - 1)),
+        description: getRandomElementArray(descriptions),
+        photos: photosLinks.slice(0, getRandomInteger(1, photosLinks.length - 1))
+      },
+      location: {
+        x: getRandomInteger(pinLocation.xMin, pinLocation.xMax),
+        y: getRandomInteger(pinLocation.yMin, pinLocation.yMax)
+      }
+    };
+    mockPinData.offer.address = `${mockPinData.location.x},${mockPinData.location.y}`;
 
-  for (let i = 0; i < QUANTITY_PINS; i++) {
-    let pin = {};
-    pin.author = authors[i];
-    pin.offer = offers[i];
-    pin.location = locations[i];
-    pins.push(pin);
+    mockPinsData.push(mockPinData);
   }
-
-  return pins;
+  return mockPinsData;
 }
 
 
 function createPinNode(pinData) {
-  const pinTemplate = document.querySelector(`#pin`).content.children[0];
-
   const pin = pinTemplate.cloneNode(true);
   const pinImg = pin.querySelector(`img`);
 
@@ -126,8 +76,8 @@ function createPinNode(pinData) {
 
 
 function fixPositiPin(pin) {
-  pin.style.left = Number(pin.style.left.replace(/[^\d;]/g, ``)) - pin.offsetWidth / 2 + `px`;
-  pin.style.top = Number(pin.style.top.replace(/[^\d;]/g, ``)) - pin.offsetHeight + `px`;
+  pin.style.left = pin.offsetLeft - pin.offsetWidth / 2 + `px`;
+  pin.style.top = pin.offsetTop - pin.offsetHeight + `px`;
 }
 
 
@@ -152,9 +102,8 @@ function appendPins(pinsData, placeInsertion) {
 }
 
 
-// показываю карту
-MAP_NODE.classList.remove(`map--faded`);
-
+// Показываю карту
+mapNode.classList.remove(`map--faded`);
 
 // Генерирую пины и вставляю на страницу
 const mockPinsData = createMockPinData();
