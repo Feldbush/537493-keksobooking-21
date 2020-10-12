@@ -30,9 +30,10 @@ function getRandomElementArray(array) {
 }
 
 
-function createMockPinData() {
-  const mockPinsData = [];
-  for (let index = 0; index < quantityPins; index++) {
+function createMockPinData(count) {
+  return new Array(count)
+  .fill(``)
+  .map((element, index) => {
     const mockPinData = {
       author: {
         avatar: `img/avatars/user0${index + 1}.png`
@@ -56,9 +57,8 @@ function createMockPinData() {
     };
     mockPinData.offer.address = `${mockPinData.location.x},${mockPinData.location.y}`;
 
-    mockPinsData.push(mockPinData);
-  }
-  return mockPinsData;
+    return mockPinData;
+  });
 }
 
 
@@ -68,12 +68,12 @@ function createPinNode(pinData) {
 
   pinImg.src = pinData.author.avatar;
   pinImg.alt = pinData.offer.title;
+
   pin.style.left = pinData.location.x + `px`;
   pin.style.top = pinData.location.y + `px`;
 
   return pin;
 }
-
 
 function fixPositiPin(pin) {
   pin.style.left = pin.offsetLeft - pin.offsetWidth / 2 + `px`;
@@ -82,8 +82,7 @@ function fixPositiPin(pin) {
 
 
 function appendPins(pinsData, placeInsertion) {
-  const fragment = document.createDocumentFragment();
-  const temporaryСontainer = fragment;
+  const temporaryСontainer = document.createDocumentFragment();
 
   for (let index = 0; index < pinsData.length; index++) {
     temporaryСontainer.append(createPinNode(pinsData[index]));
@@ -106,7 +105,7 @@ function appendPins(pinsData, placeInsertion) {
 mapNode.classList.remove(`map--faded`);
 
 // Генерирую пины и вставляю на страницу
-const mockPinsData = createMockPinData();
+const mockPinsData = createMockPinData(quantityPins);
 const mapPinsContainer = document.querySelector(`.map__pins`);
 appendPins(mockPinsData, mapPinsContainer);
 
