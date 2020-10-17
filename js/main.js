@@ -93,55 +93,81 @@ function appendPins(pinsData, placeInsertion) {
   placeInsertion.append(temporaryСontainer);
 }
 
-function createCardNode(dataCard) {
-  const card = cardTemplate.cloneNode(true);
-  const title = card.querySelector(`.popup__title`);
-  const address = card.querySelector(`.popup__text--address`);
-  const price = card.querySelector(`.popup__text--price`);
-  const type = card.querySelector(`.popup__type`);
-  const capacity = card.querySelector(`.popup__text--capacity`);
-  const time = card.querySelector(`.popup__text--time`);
-  const featuresItems = card.querySelectorAll(`.popup__feature`);
-  const description = card.querySelector(`.popup__description`);
-  const photos = card.querySelector(`.popup__photos`);
-  const photoTemplate = card.querySelector(`.popup__photo`).cloneNode(true);
-  const avatar = card.querySelector(`.popup__avatar`);
 
-  title.textContent = dataCard.offer.title;
-  address.textContent = dataCard.offer.address;
-  price.textContent = dataCard.offer.price;
-  type.textContent = OfferTypeRu[dataCard.offer.type];
-  capacity.textContent = `${dataCard.offer.rooms} комнаты для ${dataCard.offer.guests} гостей`;
-  time.textContent = `Заезд после ${dataCard.offer.checkin}, выезд до ${dataCard.offer.checkout}`;
-  description.textConten = dataCard.offer.description;
-  avatar.src = dataCard.author.avatar;
+function renderFeatures(container, dataElements) {
+  container.innerHTML = ``;
 
-  // Скрываю все преимущества
-  featuresItems.forEach((item) => {
-    item.style.display = `none`;
+  dataElements.forEach((feature) => {
+    const template = document.createElement(`li`);
+    template.classList.add(`popup__feature`);
+    template.classList.add(`popup__feature--${feature}`);
+    container.append(template);
   });
+}
 
-  // Показываю лишь те преимущества которые есть в данном офере
-  dataCard.offer.features.forEach((feature) => {
-    const featureItem = card.querySelector(`.popup__feature--${feature}`);
-    if (featureItem !== null) {
-      featureItem.style.display = ``;
-    }
-  });
 
-  // Удаляю все дочерние элементы контейнера с фотками офера
-  while (photos.firstChild) {
-    photos.removeChild(photos.firstChild);
-  }
+function renderPhotos(container, template, dataElements) {
+  container.innerHTML = ``;
 
-  // Добавляю фото оффера используя в качестве темплейта img которые уже лежал в контенере с фото
-  dataCard.offer.photos.forEach((photoSrc) => {
-    const photo = photoTemplate.cloneNode(true);
+  dataElements.forEach((photoSrc) => {
+    const photo = template.cloneNode(true);
     photo.src = photoSrc;
-    photos.append(photo);
+    container.append(photo);
   });
+}
+
+
+function createCardNode(dataCard) {
+  const {
+    offer = {},
+    author = {}
+  } = dataCard;
+
+  const {
+    address = `500`,
+    checkin = ``,
+    checkout = ``,
+    description = ``,
+    features = [],
+    guests = ``,
+    photos = [],
+    price = ``,
+    rooms = ``,
+    title = ``,
+    type = ``
+  } = offer;
+
+  const card = cardTemplate.cloneNode(true);
+
+  const cardTitle = card.querySelector(`.popup__title`);
+  const cardAddress = card.querySelector(`.popup__text--address`);
+  const cardPrice = card.querySelector(`.popup__text--price`);
+  const cardType = card.querySelector(`.popup__type`);
+  const cardCapacity = card.querySelector(`.popup__text--capacity`);
+  const cardTime = card.querySelector(`.popup__text--time`);
+  const cardFeatures = card.querySelector(`.popup__features`);
+  const cardDescription = card.querySelector(`.popup__description`);
+  const cardPhotos = card.querySelector(`.popup__photos`);
+  const cardAvatar = card.querySelector(`.popup__avatar`);
+  const cardPhotoTemplate = card.querySelector(`.popup__photo`).cloneNode(true);
+
+  cardTitle.textContent = title;
+  cardAddress.textContent = address;
+  cardPrice.textContent = price;
+  cardType.textContent = OfferTypeRu[type];
+  cardCapacity.textContent = `${rooms} ${getDeclinationlOfNum(Number(rooms), [`комната`, `комнаты`, `комнат`])} для ${guests} ${getDeclinationlOfNum(Number(guests), [`гость`, `гостей`, `гостей`])}`;
+  cardTime.textContent = `Заезд после ${checkin}, выезд до ${checkout}`;
+  cardDescription.textConten = description;
+  cardAvatar.src = author.avatar;
+  renderFeatures(cardFeatures, features);
+  renderPhotos(cardPhotos, cardPhotoTemplate, photos);
 
   return card;
+}
+
+function getDeclinationlOfNum(number, titles) {
+  const cases = [2, 0, 1, 1, 1, 2];
+  return titles[(number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 10 < 5) ? number % 10 : 5]];
 }
 
 
@@ -153,5 +179,9 @@ const mockPinsData = createMockPinData(QUANTITY_PINS);
 const mapPinsContainer = document.querySelector(`.map__pins`);
 appendPins(mockPinsData, mapPinsContainer);
 
+function insertBeforeNode(parentNode, insertedNode, nodeBeforeInsert) {
+  parentNode.insertBefore(insertedNode, nodeBeforeInsert);
+}
+
 // Добавляю карточку оффера на страницу
-mapNode.insertBefore(createCardNode(createMockPinData(QUANTITY_PINS)[0]), mapFiltersContainer);
+insertBeforeNode(mapNode, createCardNode(createMockPinData(QUANTITY_PINS)[0]), mapFiltersContainer);
