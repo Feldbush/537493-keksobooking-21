@@ -4,6 +4,12 @@ const QUANTITY_PINS = 8;
 const TITLE_OFFER = [`Супер классный, новый, модный отель`, `Вот это отель`, `Гостиница так гостиница`];
 const DESCRIPTION = [`Лучший отель на этой планете Лучший отель на этой планете Лучший отель на этой планете`, `Бомба БомбаБомбаБомбаБомбаБомбаБомба`, `Шикарно Шикарно Шикарно Шикарно`];
 const OFFER_TYPE = [`palace`, `flat`, `house`, `bungalow`];
+const OfferTypeRu = {
+  palace: `Дворец`,
+  flat: `Квартира`,
+  house: `Дом`,
+  bungalow: `Бунгало`
+};
 const MAX_QUANTITY_ROOMS = 5;
 const MAX_QUANTITY_GUEST = 7;
 const CHECKIN_TIMES = [`12:00`, `13:00`, `14:00`];
@@ -11,7 +17,9 @@ const CHECKOUT_TIMES = [`12:00`, `13:00`, `14:00`];
 const FEATURES = [`wifi`, `dishwasher`, `parking`, `washer`, `elevator`, `conditioner`];
 const PHOTOS_LINKS = [`http://o0.github.io/assets/images/tokyo/hotel1.jpg`, `http://o0.github.io/assets/images/tokyo/hotel2.jpg`, `http://o0.github.io/assets/images/tokyo/hotel3.jpg`];
 const mapNode = document.querySelector(`.map`);
+const mapFiltersContainer = document.querySelector(`.map__filters-container`);
 const pinTemplate = document.querySelector(`#pin`).content.querySelector(`.map__pin`);
+const cardTemplate = document.querySelector(`#card`).content.querySelector(`.map__card`);
 const PIN_LOCATION = {
   yMin: 130,
   yMax: 630,
@@ -45,7 +53,7 @@ function createMockPinData(count) {
         guests: getRandomInteger(1, MAX_QUANTITY_GUEST),
         checkin: getRandomElementArray(CHECKIN_TIMES),
         checkout: getRandomElementArray(CHECKOUT_TIMES),
-        FEATURES: FEATURES.slice(0, getRandomInteger(1, FEATURES.length - 1)),
+        features: FEATURES.slice(0, getRandomInteger(1, FEATURES.length - 1)),
         description: getRandomElementArray(DESCRIPTION),
         photos: PHOTOS_LINKS.slice(0, getRandomInteger(1, PHOTOS_LINKS.length - 1))
       },
@@ -74,11 +82,6 @@ function createPinNode(pinData) {
   return pin;
 }
 
-function fixPositiPin(pin) {
-  pin.style.left = pin.offsetLeft - pin.offsetWidth / 2 + `px`;
-  pin.style.top = pin.offsetTop - pin.offsetHeight + `px`;
-}
-
 
 function appendPins(pinsData, placeInsertion) {
   const temporaryСontainer = document.createDocumentFragment();
@@ -91,6 +94,83 @@ function appendPins(pinsData, placeInsertion) {
 }
 
 
+function renderFeatures(container, dataElements) {
+  container.innerHTML = ``;
+
+  dataElements.forEach((feature) => {
+    const template = document.createElement(`li`);
+    template.classList.add(`popup__feature`);
+    template.classList.add(`popup__feature--${feature}`);
+    container.append(template);
+  });
+}
+
+
+function renderPhotos(container, template, dataElements) {
+  container.innerHTML = ``;
+
+  dataElements.forEach((photoSrc) => {
+    const photo = template.cloneNode(true);
+    photo.src = photoSrc;
+    container.append(photo);
+  });
+}
+
+
+function createCardNode(dataCard) {
+  const {
+    offer = {},
+    author = {}
+  } = dataCard;
+
+  const {
+    address = `500`,
+    checkin = ``,
+    checkout = ``,
+    description = ``,
+    features = [],
+    guests = ``,
+    photos = [],
+    price = ``,
+    rooms = ``,
+    title = ``,
+    type = ``
+  } = offer;
+
+  const card = cardTemplate.cloneNode(true);
+
+  const cardTitle = card.querySelector(`.popup__title`);
+  const cardAddress = card.querySelector(`.popup__text--address`);
+  const cardPrice = card.querySelector(`.popup__text--price`);
+  const cardType = card.querySelector(`.popup__type`);
+  const cardCapacity = card.querySelector(`.popup__text--capacity`);
+  const cardTime = card.querySelector(`.popup__text--time`);
+  const cardFeatures = card.querySelector(`.popup__features`);
+  const cardDescription = card.querySelector(`.popup__description`);
+  const cardPhotos = card.querySelector(`.popup__photos`);
+  const cardAvatar = card.querySelector(`.popup__avatar`);
+  const cardPhotoTemplate = card.querySelector(`.popup__photo`).cloneNode(true);
+
+  cardTitle.textContent = title;
+  cardAddress.textContent = address;
+  cardPrice.textContent = price;
+  cardType.textContent = OfferTypeRu[type];
+  cardCapacity.textContent = `${rooms} ${getDeclinationlOfNum(Number(rooms), [`комната`, `комнаты`, `комнат`])} для ${guests} ${getDeclinationlOfNum(Number(guests), [`гость`, `гостей`, `гостей`])}`;
+  cardTime.textContent = `Заезд после ${checkin}, выезд до ${checkout}`;
+  cardDescription.textConten = description;
+  cardAvatar.src = author.avatar;
+  renderFeatures(cardFeatures, features);
+  renderPhotos(cardPhotos, cardPhotoTemplate, photos);
+
+  return card;
+}
+
+function getDeclinationlOfNum(number, titles) {
+  const cases = [2, 0, 1, 1, 1, 2];
+  return titles[(number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 10 < 5) ? number % 10 : 5]];
+}
+
+
 // Показываю карту
 mapNode.classList.remove(`map--faded`);
 
@@ -99,3 +179,9 @@ const mockPinsData = createMockPinData(QUANTITY_PINS);
 const mapPinsContainer = document.querySelector(`.map__pins`);
 appendPins(mockPinsData, mapPinsContainer);
 
+function insertBeforeNode(parentNode, insertedNode, nodeBeforeInsert) {
+  parentNode.insertBefore(insertedNode, nodeBeforeInsert);
+}
+
+// Добавляю карточку оффера на страницу
+insertBeforeNode(mapNode, createCardNode(createMockPinData(QUANTITY_PINS)[0]), mapFiltersContainer);
