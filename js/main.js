@@ -27,6 +27,8 @@
 //   xMax: mapNode.offsetWidth - 100
 // };
 const HEIGHT_NEEDLE_MAIN_PIN = 16;
+const ENTER_KEY_CODE = 13;
+const LEFT_BUTTON_MOUSE_KEY_CODE = 0;
 
 // function getRandomInteger(min, max) {
 //   return Math.round(min - 0.5 + Math.random() * (max - min + 1));
@@ -156,7 +158,7 @@ const HEIGHT_NEEDLE_MAIN_PIN = 16;
 //   cardAddress.textContent = address;
 //   cardPrice.textContent = price;
 //   cardType.textContent = OfferTypeRu[type];
-//   cardCapacity.textContent = `${rooms} ${getDeclinationlOfNum(Number(rooms), [`комната`, `комнаты`, `комнат`])} для ${guests} ${getDeclinationlOfNum(Number(guests), [`гость`, `гостей`, `гостей`])}`;
+//   cardCapacity.textContent = `${rooms} ${getDeclinationlOfNum(parseInt(rooms, 10), [`комната`, `комнаты`, `комнат`])} для ${guests} ${getDeclinationlOfNum(parseInt(guests, 10), [`гость`, `гостей`, `гостей`])}`;
 //   cardTime.textContent = `Заезд после ${checkin}, выезд до ${checkout}`;
 //   cardDescription.textConten = description;
 //   cardAvatar.src = author.avatar;
@@ -187,43 +189,35 @@ const HEIGHT_NEEDLE_MAIN_PIN = 16;
 // // Добавляю карточку оффера на страницу
 // insertBeforeNode(mapNode, createCardNode(createMockPinData(QUANTITY_PINS)[0]), mapFiltersContainer);
 
+function enableDisabledFields(FieldsCollection, state = false) {
+  FieldsCollection.forEach((field) => {
+    field.disabled = !state;
+  });
+}
 
-function setStatePage(toggle) {
+function setStatePage(state = false) {
   const map = document.querySelector(`.map`);
-  const form = document.querySelector(`.ad-form`);
-  const fields = form.querySelectorAll(`fieldset`);
+  const formAd = document.querySelector(`.ad-form`);
+  const fields = formAd.querySelectorAll(`fieldset`);
 
-  fillAdress();
-
-  if (toggle) {
-    fields.forEach((field) => {
-      field.disabled = false;
-    });
-    form.classList.remove(`ad-form--disabled`);
+  if (state) {
+    formAd.classList.remove(`ad-form--disabled`);
     map.classList.remove(`map--faded`);
-
-    window.statePage = true;
-
-    return window.statePage;
+  } else {
+    formAd.classList.add(`ad-form--disabled`);
+    map.classList.add(`map--faded`);
   }
 
-  fields.forEach((field) => {
-    field.disabled = true;
-  });
-  form.classList.add(`ad-form--disabled`);
-  map.classList.add(`map--faded`);
-
-  window.statePage = false;
-
-  return window.statePage;
+  window.statePage = state;
+  fillAdress();
+  enableDisabledFields(fields, state);
 }
 
 
 function mainPinHandler(evt) {
-  if (evt.button === 0 || evt.keyCode === 13) {
+  if (evt.button === LEFT_BUTTON_MOUSE_KEY_CODE || evt.keyCode === ENTER_KEY_CODE) {
     evt.preventDefault();
     setStatePage(true);
-    fillAdress();
   }
 }
 
@@ -232,15 +226,11 @@ function fillAdress() {
   const fieldAdress = document.querySelector(`#address`);
   const mainPin = document.querySelector(`.map__pin--main`);
 
-  if (window.statePage === false) {
-    const x = Math.abs(Math.round(mainPin.offsetLeft + mainPin.offsetWidth / 2));
-    const y = Math.abs(Math.round(mainPin.offsetTop + mainPin.offsetHeight / 2));
-    fieldAdress.value = `${x}, ${y}`;
-  } else if (window.statePage === true) {
-    const x = Math.abs(Math.round(mainPin.offsetLeft + mainPin.offsetWidth / 2));
-    const y = Math.abs(Math.round(mainPin.offsetTop + mainPin.offsetHeight + HEIGHT_NEEDLE_MAIN_PIN));
-    fieldAdress.value = `${x}, ${y}`;
-  }
+  const x = Math.abs(Math.round(mainPin.offsetLeft + mainPin.offsetWidth / 2));
+  const y = window.statePage
+    ? Math.abs(Math.round(mainPin.offsetTop + mainPin.offsetHeight / 2))
+    : Math.abs(Math.round(mainPin.offsetTop + mainPin.offsetHeight + HEIGHT_NEEDLE_MAIN_PIN));
+  fieldAdress.value = `${x}, ${y}`;
 }
 
 
@@ -248,28 +238,20 @@ function roomsCapacityRatioValidHandler() {
   const roomsField = document.querySelector(`#room_number`);
   const capacityField = document.querySelector(`#capacity`);
 
-  const roomsValue = Number(roomsField.value);
-  const capacityValue = Number(capacityField.value);
+  const roomsValue = parseInt(roomsField.value, 10);
+  const capacityValue = parseInt(capacityField.value, 10);
 
 
   if (roomsField.options[roomsField.selectedIndex].dataset.live === `false` || capacityValue === 0) {
-
     if (roomsField.options[roomsField.selectedIndex].dataset.live === `false` && capacityValue === 0) {
       capacityField.setCustomValidity(``);
       roomsField.setCustomValidity(``);
-
       return;
     }
-
     roomsField.setCustomValidity(`"Не для гостей" только не жилые помещения - "100 комнат"`);
-
     return;
-  }
-
-
-  if (roomsValue < capacityValue) {
+  } else if (roomsValue < capacityValue) {
     roomsField.setCustomValidity(`Комнат не может быть меньше чем мест`);
-
     return;
   }
 
@@ -284,10 +266,12 @@ function preparePage() {
   const mainPin = document.querySelector(`.map__pin--main`);
   mainPin.addEventListener(`mousedown`, mainPinHandler);
   mainPin.addEventListener(`keydown`, mainPinHandler);
-  fillAdress();
 
   const roomsField = document.querySelector(`#room_number`);
   const capacityField = document.querySelector(`#capacity`);
+
+  roomsField.removeEventListener(`change`, roomsCapacityRatioValidHandler);
+  capacityField.removeEventListener(`change`, roomsCapacityRatioValidHandler);
 
   roomsField.addEventListener(`change`, roomsCapacityRatioValidHandler);
   capacityField.addEventListener(`change`, roomsCapacityRatioValidHandler);
