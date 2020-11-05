@@ -2,7 +2,7 @@
 
 (function () {
   const cardTemplate = document.querySelector(`#card`).content.querySelector(`.map__card`);
-  const OfferTypeToRu = {
+  const offerTypeToRu = {
     palace: `Дворец`,
     flat: `Квартира`,
     house: `Дом`,
@@ -31,8 +31,8 @@
   }
 
   function getDeclinationlOfNum(number, titles) {
-    const cases = [2, 0, 1, 1, 1, 2];
-    return titles[(number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 10 < 5) ? number % 10 : 5]];
+    const CASES = [2, 0, 1, 1, 1, 2];
+    return titles[(number % 100 > 4 && number % 100 < 20) ? 2 : CASES[(number % 10 < 5) ? number % 10 : 5]];
   }
 
   window.card = {
@@ -73,7 +73,7 @@
       cardTitle.textContent = title;
       cardAddress.textContent = address;
       cardPrice.textContent = price;
-      cardType.textContent = OfferTypeToRu[type];
+      cardType.textContent = offerTypeToRu[type];
       cardCapacity.textContent = `${rooms} ${getDeclinationlOfNum(parseInt(rooms, 10), [`комната`, `комнаты`, `комнат`])} для ${guests} ${getDeclinationlOfNum(parseInt(guests, 10), [`гость`, `гостей`, `гостей`])}`;
       cardTime.textContent = `Заезд после ${checkin}, выезд до ${checkout}`;
       cardDescription.textConten = description;

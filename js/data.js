@@ -11,7 +11,7 @@
   const FEATURES = [`wifi`, `dishwasher`, `parking`, `washer`, `elevator`, `conditioner`];
   const PHOTOS_LINKS = [`http://o0.github.io/assets/images/tokyo/hotel1.jpg`, `http://o0.github.io/assets/images/tokyo/hotel2.jpg`, `http://o0.github.io/assets/images/tokyo/hotel3.jpg`];
   const mapNode = document.querySelector(`.map`);
-  const PIN_LOCATION = {
+  const pinLocation = {
     yMin: 130,
     yMax: 630,
     xMin: 50,
@@ -49,8 +49,8 @@
             photos: PHOTOS_LINKS.slice(0, getRandomInteger(1, PHOTOS_LINKS.length - 1))
           },
           location: {
-            x: getRandomInteger(PIN_LOCATION.xMin, PIN_LOCATION.xMax),
-            y: getRandomInteger(PIN_LOCATION.yMin, PIN_LOCATION.yMax)
+            x: getRandomInteger(pinLocation.xMin, pinLocation.xMax),
+            y: getRandomInteger(pinLocation.yMin, pinLocation.yMax)
           }
         };
         mockPinData.offer.address = `${mockPinData.location.x},${mockPinData.location.y}`;

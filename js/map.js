@@ -73,6 +73,13 @@
         mapNode.querySelectorAll(`.map__pin:not(.map__pin--main)`);
         mapNode.classList.add(`map--faded`);
       }
+    },
+    setStatePage(state = false) {
+      window.map.setStateMap(state);
+      window.form.setStateForm(state);
+
+      window.statePage = state;
+      window.form.fillAdress();
     }
   };
 
