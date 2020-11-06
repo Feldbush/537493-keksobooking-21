@@ -22,7 +22,6 @@
     return Math.round(min - 0.5 + Math.random() * (max - min + 1));
   }
 
-
   function getRandomElementArray(array) {
     return array[getRandomInteger(0, array.length - 1)];
   }
