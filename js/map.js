@@ -37,8 +37,61 @@
   function mainPinHandler(evt) {
     if (evt.button === LEFT_BUTTON_MOUSE_KEY_CODE || evt.keyCode === ENTER_KEY_CODE) {
       evt.preventDefault();
-      window.setStatePage(true);
+      window.map.setStatePage(true);
     }
+  }
+
+
+  function dargAndDropHandlerMainPin(evt) {
+    function onMouseMove(moveEvt) {
+      moveEvt.preventDefault();
+
+      const shift = {
+        x: startCoords.x - moveEvt.clientX,
+        y: startCoords.y - moveEvt.clientY
+      };
+
+      startCoords = {
+        x: moveEvt.clientX,
+        y: moveEvt.clientY
+      };
+
+      const maxCoordX = mainPin.offsetParent.offsetWidth - (mainPin.offsetWidth / 2);
+      const minCoordX = 0 - (mainPin.offsetWidth / 2);
+      const maxCoordY = 630 - (mainPin.offsetHeight) - window.form.HEIGHT_NEEDLE_MAIN_PIN;
+      const minCoordY = 130 - (mainPin.offsetHeight) - window.form.HEIGHT_NEEDLE_MAIN_PIN;
+
+      if (mainPin.offsetLeft < minCoordX) {
+        mainPin.style.left = minCoordX + `px`;
+      } else if (mainPin.offsetLeft >= (maxCoordX)) {
+        mainPin.style.left = maxCoordX - shift.x + `px`;
+      } else if (mainPin.offsetTop <= minCoordY) {
+        mainPin.style.top = minCoordY + `px`;
+      } else if (mainPin.offsetTop >= maxCoordY) {
+        mainPin.style.top = maxCoordY - shift.x + `px`;
+      }
+
+      mainPin.style.top = mainPin.offsetTop - shift.y + `px`;
+      mainPin.style.left = mainPin.offsetLeft - shift.x + `px`;
+
+      window.form.fillAdress();
+    }
+
+    function onMouseUp(upEvt) {
+      upEvt.preventDefault();
+
+      window.form.fillAdress();
+      document.removeEventListener(`mousemove`, onMouseMove);
+      document.removeEventListener(`mouseup`, onMouseUp);
+    }
+
+    let startCoords = {
+      x: evt.clientX,
+      y: evt.clientY
+    };
+
+    document.addEventListener(`mousemove`, onMouseMove);
+    document.addEventListener(`mouseup`, onMouseUp);
   }
 
   function appendPins(pinsData, placeInsertion) {
@@ -59,6 +112,7 @@
   }
 
   mainPin.addEventListener(`mousedown`, mainPinHandler);
+  mainPin.addEventListener(`mousedown`, dargAndDropHandlerMainPin);
   mainPin.addEventListener(`keydown`, mainPinHandler);
 
   window.map = {

@@ -135,6 +135,19 @@ fieldset {
   opacity: 1;
 }
 
+.map__pins::before {
+  position: absolute;
+  top: 630px;
+  left: 500px;
+
+  display: block;
+  width: 20px;
+  height: 20px;
+
+  background-color: tomato;
+
+  content: "";
+}
 
 /**
  * Метка объявления
