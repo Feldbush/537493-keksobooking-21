@@ -43,6 +43,17 @@
 
 
   function dargAndDropHandlerMainPin(evt) {
+
+    let startCoords = {
+      x: evt.clientX,
+      y: evt.clientY
+    };
+
+    let startPin = {
+      x: mainPin.offsetLeft,
+      y: mainPin.offsetTop
+    };
+
     function onMouseMove(moveEvt) {
       moveEvt.preventDefault();
 
@@ -51,28 +62,33 @@
         y: startCoords.y - moveEvt.clientY
       };
 
-      startCoords = {
-        x: moveEvt.clientX,
-        y: moveEvt.clientY
-      };
+      // console.log(shift.x, shift.y);
+
+      // startCoords = {
+      //   x: moveEvt.clientX,
+      //   y: moveEvt.clientY
+      // };
 
       const maxCoordX = mainPin.offsetParent.offsetWidth - (mainPin.offsetWidth / 2);
       const minCoordX = 0 - (mainPin.offsetWidth / 2);
       const maxCoordY = 630 - (mainPin.offsetHeight) - window.form.HEIGHT_NEEDLE_MAIN_PIN;
       const minCoordY = 130 - (mainPin.offsetHeight) - window.form.HEIGHT_NEEDLE_MAIN_PIN;
 
-      if (mainPin.offsetLeft < minCoordX) {
-        mainPin.style.left = minCoordX + `px`;
-      } else if (mainPin.offsetLeft >= (maxCoordX)) {
-        mainPin.style.left = maxCoordX - shift.x + `px`;
-      } else if (mainPin.offsetTop <= minCoordY) {
-        mainPin.style.top = minCoordY + `px`;
-      } else if (mainPin.offsetTop >= maxCoordY) {
-        mainPin.style.top = maxCoordY - shift.x + `px`;
-      }
+      mainPin.style.top = startPin.y - shift.y + `px`;
+      mainPin.style.left = startPin.x - shift.x + `px`;
 
-      mainPin.style.top = mainPin.offsetTop - shift.y + `px`;
-      mainPin.style.left = mainPin.offsetLeft - shift.x + `px`;
+      if (mainPin.offsetLeft <= minCoordX) {
+        mainPin.style.left = minCoordX + `px`;
+      }
+      if (mainPin.offsetLeft >= maxCoordX) {
+        mainPin.style.left = maxCoordX + `px`;
+      }
+      if (mainPin.offsetTop <= minCoordY) {
+        mainPin.style.top = minCoordY + `px`;
+      }
+      if (mainPin.offsetTop >= maxCoordY) {
+        mainPin.style.top = maxCoordY + `px`;
+      }
 
       window.form.fillAdress();
     }
@@ -84,11 +100,6 @@
       document.removeEventListener(`mousemove`, onMouseMove);
       document.removeEventListener(`mouseup`, onMouseUp);
     }
-
-    let startCoords = {
-      x: evt.clientX,
-      y: evt.clientY
-    };
 
     document.addEventListener(`mousemove`, onMouseMove);
     document.addEventListener(`mouseup`, onMouseUp);
