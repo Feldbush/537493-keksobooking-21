@@ -4,7 +4,6 @@
 
   const formAd = document.querySelector(`.ad-form`);
   const fields = formAd.querySelectorAll(`fieldset`);
-  const HEIGHT_NEEDLE_MAIN_PIN = 16;
   const OfferTypeToMinPrice = {
     palace: 10000,
     flat: 1000,
@@ -113,14 +112,16 @@
   offerPriceInput.addEventListener(`input`, offerTypeRatioPriceValidHandler);
 
   window.form = {
+    HEIGHT_NEEDLE_MAIN_PIN: 15,
+
     fillAdress() {
       const fieldAdress = document.querySelector(`#address`);
       const mainPin = document.querySelector(`.map__pin--main`);
 
-      const x = Math.abs(Math.round(mainPin.offsetLeft + mainPin.offsetWidth / 2));
+      const x = Math.round(mainPin.offsetLeft + mainPin.offsetWidth / 2);
       const y = window.statePage
-        ? Math.abs(Math.round(mainPin.offsetTop + mainPin.offsetHeight / 2))
-        : Math.abs(Math.round(mainPin.offsetTop + mainPin.offsetHeight + HEIGHT_NEEDLE_MAIN_PIN));
+        ? Math.abs(Math.round(mainPin.offsetTop + mainPin.offsetHeight + window.form.HEIGHT_NEEDLE_MAIN_PIN))
+        : Math.abs(Math.round(mainPin.offsetTop + mainPin.offsetHeight / 2));
       fieldAdress.value = `${x}, ${y}`;
     },
 
