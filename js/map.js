@@ -5,7 +5,6 @@
   const ENTER_KEY_CODE = 13;
   const LEFT_BUTTON_MOUSE_KEY_CODE = 0;
 
-  // const mockPinsData = window.data.createMockPinData(QUANTITY_PINS);
   const mainPin = document.querySelector(`.map__pin--main`);
 
   const mapNode = document.querySelector(`.map`);
@@ -17,7 +16,7 @@
         document.querySelector(`.map__card`).remove();
       }
       const serialNumber = evt.currentTarget.dataset.serialNumber;
-      const cardOffer = window.card.createCardNode(window.mockPinsData[serialNumber]);
+      const cardOffer = window.card.createCardNode(window.filter.getData()[serialNumber]);
       const closeOfferCardOnKeypress = (e) => {
         if (e.keyCode === ESC_KEY_CODE) {
           cardOffer.remove();
@@ -60,13 +59,6 @@
         x: startCoords.x - moveEvt.clientX,
         y: startCoords.y - moveEvt.clientY
       };
-
-      // console.log(shift.x, shift.y);
-
-      // startCoords = {
-      //   x: moveEvt.clientX,
-      //   y: moveEvt.clientY
-      // };
 
       const maxCoordX = mainPin.offsetParent.offsetWidth - (mainPin.offsetWidth / 2);
       const minCoordX = 0 - (mainPin.offsetWidth / 2);
@@ -145,7 +137,7 @@
         // Генерирую пины и вставляю на страницу
         const mapPinsContainer = document.querySelector(`.map__pins`);
         window.getData.makeRequest((response) => {
-          window.mockPinsData = response;
+          window.filter.setData(response);
           appendPins(response, mapPinsContainer);
         },
         errorRequestHandler
