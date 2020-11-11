@@ -4,7 +4,7 @@
   const pinTemplate = document.querySelector(`#pin`).content.querySelector(`.map__pin`);
 
   window.pin = {
-    createPinNode(pinData) {
+    createPinNode(pinData, index) {
       const pin = pinTemplate.cloneNode(true);
       const pinImg = pin.querySelector(`img`);
 
@@ -14,7 +14,7 @@
       pin.style.left = pinData.location.x - pinImg.width + `px`;
       pin.style.top = pinData.location.y - pinImg.height + `px`;
 
-      pin.dataset.serialNumber = pinData.serialNumber;
+      pin.dataset.serialNumber = index;
 
       return pin;
     }
