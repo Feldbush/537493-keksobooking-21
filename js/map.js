@@ -1,24 +1,20 @@
 'use strict';
 
 (function () {
-  const ESC_KEY_CODE = 27;
-  const ENTER_KEY_CODE = 13;
-  const LEFT_BUTTON_MOUSE_KEY_CODE = 0;
-
   const mainPin = document.querySelector(`.map__pin--main`);
 
   const mapNode = document.querySelector(`.map`);
   const mapFiltersContainer = document.querySelector(`.map__filters-container`);
 
   function pinHandler(evt) {
-    if (evt.button === LEFT_BUTTON_MOUSE_KEY_CODE || evt.keyCode === ENTER_KEY_CODE) {
+    if (evt.button === window.utils.LEFT_BUTTON_MOUSE_KEY_CODE || evt.keyCode === window.utils.ENTER_KEY_CODE) {
       if (document.querySelector(`.map__card`)) {
         document.querySelector(`.map__card`).remove();
       }
       const serialNumber = evt.currentTarget.dataset.serialNumber;
       const cardOffer = window.card.createCardNode(window.filter.getData()[serialNumber]);
       const closeOfferCardOnKeypress = (e) => {
-        if (e.keyCode === ESC_KEY_CODE) {
+        if (e.keyCode === window.utils.ESC_KEY_CODE) {
           cardOffer.remove();
           document.removeEventListener(`keydown`, closeOfferCardOnKeypress);
         }
@@ -33,7 +29,7 @@
   }
 
   function mainPinHandler(evt) {
-    if (evt.button === LEFT_BUTTON_MOUSE_KEY_CODE || evt.keyCode === ENTER_KEY_CODE) {
+    if (evt.button === window.utils.LEFT_BUTTON_MOUSE_KEY_CODE || evt.keyCode === window.utils.ENTER_KEY_CODE) {
       evt.preventDefault();
       window.map.setStatePage(true);
     }
@@ -143,7 +139,10 @@
         errorRequestHandler
         );
       } else {
-        mapNode.querySelectorAll(`.map__pin:not(.map__pin--main)`);
+        const pins = mapNode.querySelectorAll(`.map__pin:not(.map__pin--main)`);
+        pins.forEach((pin) => {
+          pin.remove();
+        });
         mapNode.classList.add(`map--faded`);
       }
     },

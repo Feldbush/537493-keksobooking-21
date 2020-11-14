@@ -1,15 +1,16 @@
 'use strict';
 
 (function () {
-
   const formAd = document.querySelector(`.ad-form`);
   const fields = formAd.querySelectorAll(`fieldset`);
+  const resetBtn = formAd.querySelector(`.ad-form__reset`);
   const OfferTypeToMinPrice = {
     palace: 10000,
     flat: 1000,
     house: 5000,
     bungalow: 0
   };
+  const actionForm = `https://21.javascript.pages.academy/keksobooking`;
 
   // function paintOrClearBorderField(field, toggle) {
   //   if (!toggle) {
@@ -18,6 +19,10 @@
   //     field.style.borderColor = ``;
   //   }
   // }
+
+  function resetFormHandel() {
+    window.map.setStatePage(false);
+  }
 
   function enableDisabledFields(FieldsCollection, state = false) {
     FieldsCollection.forEach((field) => {
@@ -66,14 +71,6 @@
     titleInput.reportValidity();
   }
 
-  function offerPriceMaxValueValidator() {
-    if (parseInt(offerPriceInput.value, 10) > 1000000) {
-      offerPriceInput.setCustomValidity(`Максимальное значение — 1000000.`);
-    } else {
-      offerPriceInput.setCustomValidity(``);
-    }
-  }
-
   function timeinTimeOutHandler(evt) {
     if (timeInInput.value !== timeOutInput.value) {
       timeInInput.value = evt.currentTarget.value;
@@ -85,17 +82,95 @@
     evt.preventDefault();
   }
 
-  function offerTypeRatioPriceValidHandler() {
+  function offerTypeRatioValidator() {
     const minPrice = OfferTypeToMinPrice[offerTypeInput.value];
     offerPriceInput.placeholder = String(minPrice);
 
     if (parseInt(offerPriceInput.value, 10) < minPrice) {
       offerPriceInput.setCustomValidity(`Минимальная цена за ночь для выбранного типа жилья состовляет ${minPrice}`);
+    } else if (parseInt(offerPriceInput.value, 10) > 1000000) {
+      offerPriceInput.setCustomValidity(`Максимальное значение — 1000000.`);
     } else {
       offerPriceInput.setCustomValidity(``);
     }
     offerPriceInput.reportValidity();
   }
+
+  function sendUserData(data, onSucces, onError, url = actionForm) {
+    const xhr = new XMLHttpRequest();
+
+    xhr.addEventListener(`load`, function () {
+      if (xhr.status === 200) {
+        onSucces(`Данные успешно отправлены`);
+      } else {
+        onError(`Непредвиденная ошибка`);
+      }
+    });
+
+    xhr.addEventListener(`error`, function () {
+      onError(`Произошла ошибка соединения`);
+    });
+
+    xhr.addEventListener(`timeout`, function () {
+      onError(`Запрос не успел выполниться за ` + xhr.timeout + `мс`);
+    });
+
+    xhr.timeout = window.utils.TIMEOUT_IN_MS;
+
+    xhr.open(`POST`, url);
+
+    xhr.send(data);
+  }
+
+  function onSuccesSendUserData(message) {
+    const messageTemplate = document.querySelector(`#success`).content.querySelector(`.success`).cloneNode(true);
+    if (message) {
+      messageTemplate.querySelector(`.success__message`).textContent = message;
+    }
+    document.querySelector(`main`).append(messageTemplate);
+    document.addEventListener(`click`, documentClickHandel);
+    document.addEventListener(`keydown`, documentClickHandel);
+
+    function documentClickHandel(evt) {
+      if (evt.button === window.utils.LEFT_BUTTON_MOUSE_KEY_CODE || evt.keyCode === window.utils.ESC_KEY_CODE) {
+        messageTemplate.remove();
+        document.removeEventListener(`click`, documentClickHandel);
+        document.removeEventListener(`keydown`, documentClickHandel);
+        window.map.setStatePage(false);
+      }
+    }
+
+    document.addEventListener(`click`, documentClickHandel);
+    document.addEventListener(`keydown`, documentClickHandel);
+  }
+
+  function onErrorSendUserData(message) {
+    const messageTemplate = document.querySelector(`#error`).content.querySelector(`.error`).cloneNode(true);
+    if (message) {
+      messageTemplate.querySelector(`.error__message`).textContent = message;
+    }
+    document.querySelector(`main`).append(messageTemplate);
+    document.addEventListener(`click`, documentClickHandel);
+    document.addEventListener(`keydown`, documentClickHandel);
+
+    function documentClickHandel(evt) {
+      if (evt.button === window.utils.LEFT_BUTTON_MOUSE_KEY_CODE || evt.keyCode === window.utils.ESC_KEY_CODE) {
+        messageTemplate.remove();
+        document.removeEventListener(`click`, documentClickHandel);
+        document.removeEventListener(`keydown`, documentClickHandel);
+      }
+    }
+
+    document.addEventListener(`click`, documentClickHandel);
+    document.addEventListener(`keydown`, documentClickHandel);
+  }
+
+  function handleSend(evt) {
+    evt.preventDefault();
+    const data = new FormData(formAd);
+    sendUserData(data, onSuccesSendUserData, onErrorSendUserData);
+  }
+
 
   titleInput.addEventListener(`input`, offerTitleValidator);
 
@@ -107,9 +182,10 @@
   timeOutInput.addEventListener(`change`, timeinTimeOutHandler);
   timeInInput.addEventListener(`change`, timeinTimeOutHandler);
 
-  offerTypeInput.addEventListener(`input`, offerTypeRatioPriceValidHandler);
-  offerPriceInput.addEventListener(`input`, offerPriceMaxValueValidator);
-  offerPriceInput.addEventListener(`input`, offerTypeRatioPriceValidHandler);
+  offerTypeInput.addEventListener(`input`, offerTypeRatioValidator);
+  offerPriceInput.addEventListener(`input`, offerTypeRatioValidator);
+  resetBtn.addEventListener(`click`, resetFormHandel);
+  formAd.addEventListener(`submit`, handleSend);
 
   window.form = {
     HEIGHT_NEEDLE_MAIN_PIN: 15,
@@ -129,9 +205,9 @@
       if (state) {
         formAd.classList.remove(`ad-form--disabled`);
       } else {
+        formAd.reset();
         formAd.classList.add(`ad-form--disabled`);
       }
-
       enableDisabledFields(fields, state);
     }
   };
