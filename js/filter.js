@@ -23,10 +23,15 @@
     return resultArray;
   }
 
-  filterForm.addEventListener(`change`, () => {
-    window.map.updatePins(filterData());
+  function onChangefilterForm() {
+    const filtredData = filterData();
+    window.utils.debounce(() => {
+      window.map.updatePins(filtredData);
+    })();
     window.map.closeCardsOffer();
-  });
+  }
+
+  filterForm.addEventListener(`change`, onChangefilterForm);
 
 
   window.filter = {

@@ -94,7 +94,7 @@
 
   function appendPins(pinsData, placeInsertion) {
     const temporaryСontainer = document.createDocumentFragment();
-
+    console.log(pinsData, `pinsData`);
     pinsData.forEach((pinData, index) => {
       let pin = window.pin.createPinNode(pinsData[index], pinsData[index].serialNumber);
       pin.addEventListener(`click`, pinHandler);
@@ -159,6 +159,7 @@
       });
     },
     updatePins(array) {
+      console.log(array, `array`);
       const mapPinsContainer = document.querySelector(`.map__pins`);
       window.map.clearPins();
       appendPins(array, mapPinsContainer);
