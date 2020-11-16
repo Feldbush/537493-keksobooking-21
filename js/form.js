@@ -12,13 +12,13 @@
   };
   const actionForm = `https://21.javascript.pages.academy/keksobooking`;
 
-  // function paintOrClearBorderField(field, toggle) {
-  //   if (!toggle) {
-  //     field.style.borderColor = `tomato`;
-  //   } else if (toggle) {
-  //     field.style.borderColor = ``;
-  //   }
-  // }
+  function paintOrClearBorderField(field, toggle) {
+    if (!toggle) {
+      field.style.border = `2px solid tomato`;
+    } else if (toggle) {
+      field.style.borderColor = ``;
+    }
+  }
 
   function resetFormHandler() {
     window.map.setStatePage(false);
@@ -58,7 +58,7 @@
       roomsField.setCustomValidity(``);
     }
 
-    evt.currentTarget.reportValidity();
+    paintOrClearBorderField(evt.currentTarget, evt.currentTarget.reportValidity());
   }
 
   function offerTitleValidator() {
@@ -68,7 +68,7 @@
       titleInput.setCustomValidity(``);
     }
 
-    titleInput.reportValidity();
+    paintOrClearBorderField(titleInput, titleInput.reportValidity());
   }
 
   function timeinTimeOutHandler(evt) {
@@ -93,7 +93,7 @@
     } else {
       offerPriceInput.setCustomValidity(``);
     }
-    offerPriceInput.reportValidity();
+    paintOrClearBorderField(offerPriceInput, offerPriceInput.reportValidity());
   }
 
   function sendUserData(data, onSucces, onError, url = actionForm) {
@@ -167,6 +167,14 @@
 
   function handlerSend(evt) {
     evt.preventDefault();
+    // Я столкнулся с тем, что обработчик не срабатывает если хотя бы одно поле на форме не валидно соответственно код ниже не отрабатывает
+    const fieldsets = formAd.querySelectorAll(`fieldset`);
+    fieldsets.forEach((field) => {
+      const input = field.querySelector(`input, select`);
+      if (input) {
+        paintOrClearBorderField(input, input.reportValidity());
+      }
+    });
     const data = new FormData(formAd);
     sendUserData(data, onSuccesSendUserData, onErrorSendUserData);
   }

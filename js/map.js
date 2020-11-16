@@ -94,7 +94,6 @@
 
   function appendPins(pinsData, placeInsertion) {
     const temporaryСontainer = document.createDocumentFragment();
-    console.log(pinsData, `pinsData`);
     pinsData.forEach((pinData, index) => {
       let pin = window.pin.createPinNode(pinsData[index], pinsData[index].serialNumber);
       pin.addEventListener(`click`, pinHandler);
@@ -134,8 +133,6 @@
         const mapPinsContainer = document.querySelector(`.map__pins`);
         window.getData.makeRequest((response) => {
           window.filter.setData(response);
-          // window.a = window.filter.getData();
-          // console.log(window.a);
           appendPins(window.filter.getData(), mapPinsContainer);
         },
         errorRequestHandler
@@ -148,6 +145,7 @@
     setStatePage(state = false) {
       window.map.setStateMap(state);
       window.form.setStateForm(state);
+      window.filter.setStatefilterForm(state);
 
       window.statePage = state;
       window.form.fillAdress();
@@ -159,7 +157,6 @@
       });
     },
     updatePins(array) {
-      console.log(array, `array`);
       const mapPinsContainer = document.querySelector(`.map__pins`);
       window.map.clearPins();
       appendPins(array, mapPinsContainer);
