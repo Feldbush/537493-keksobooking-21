@@ -12,7 +12,7 @@
         document.querySelector(`.map__card`).remove();
       }
       const serialNumber = evt.currentTarget.dataset.serialNumber;
-      const cardOffer = window.card.createCardNode(window.filter.getData()[serialNumber]);
+      const cardOffer = window.card.createCardNode(window.filter.getData(true)[serialNumber]);
       const closeOfferCardOnKeypress = (e) => {
         if (e.keyCode === window.utils.ESC_KEY_CODE) {
           cardOffer.remove();
@@ -94,9 +94,9 @@
 
   function appendPins(pinsData, placeInsertion) {
     const temporaryСontainer = document.createDocumentFragment();
-
+    console.log(pinsData, `pinsData`);
     pinsData.forEach((pinData, index) => {
-      let pin = window.pin.createPinNode(pinsData[index], index);
+      let pin = window.pin.createPinNode(pinsData[index], pinsData[index].serialNumber);
       pin.addEventListener(`click`, pinHandler);
       pin.addEventListener(`keypress`, pinHandler);
       temporaryСontainer.append(pin);
@@ -134,15 +134,14 @@
         const mapPinsContainer = document.querySelector(`.map__pins`);
         window.getData.makeRequest((response) => {
           window.filter.setData(response);
-          appendPins(response, mapPinsContainer);
+          // window.a = window.filter.getData();
+          // console.log(window.a);
+          appendPins(window.filter.getData(), mapPinsContainer);
         },
         errorRequestHandler
         );
       } else {
-        const pins = mapNode.querySelectorAll(`.map__pin:not(.map__pin--main)`);
-        pins.forEach((pin) => {
-          pin.remove();
-        });
+        window.map.clearPins();
         mapNode.classList.add(`map--faded`);
       }
     },
@@ -152,6 +151,21 @@
 
       window.statePage = state;
       window.form.fillAdress();
+    },
+    clearPins() {
+      const pins = mapNode.querySelectorAll(`.map__pin:not(.map__pin--main)`);
+      pins.forEach((pin) => {
+        pin.remove();
+      });
+    },
+    updatePins(array) {
+      console.log(array, `array`);
+      const mapPinsContainer = document.querySelector(`.map__pins`);
+      window.map.clearPins();
+      appendPins(array, mapPinsContainer);
+    },
+    closeCardsOffer() {
+      document.querySelectorAll(`.map__card`).forEach((item) => item.remove());
     }
   };
 

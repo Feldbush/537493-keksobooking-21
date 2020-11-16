@@ -20,7 +20,7 @@
   //   }
   // }
 
-  function resetFormHandel() {
+  function resetFormHandler() {
     window.map.setStatePage(false);
   }
 
@@ -128,20 +128,20 @@
       messageTemplate.querySelector(`.success__message`).textContent = message;
     }
     document.querySelector(`main`).append(messageTemplate);
-    document.addEventListener(`click`, documentClickHandel);
-    document.addEventListener(`keydown`, documentClickHandel);
+    document.addEventListener(`click`, documentClickHandler);
+    document.addEventListener(`keydown`, documentClickHandler);
 
-    function documentClickHandel(evt) {
+    function documentClickHandler(evt) {
       if (evt.button === window.utils.LEFT_BUTTON_MOUSE_KEY_CODE || evt.keyCode === window.utils.ESC_KEY_CODE) {
         messageTemplate.remove();
-        document.removeEventListener(`click`, documentClickHandel);
-        document.removeEventListener(`keydown`, documentClickHandel);
+        document.removeEventListener(`click`, documentClickHandler);
+        document.removeEventListener(`keydown`, documentClickHandler);
         window.map.setStatePage(false);
       }
     }
 
-    document.addEventListener(`click`, documentClickHandel);
-    document.addEventListener(`keydown`, documentClickHandel);
+    document.addEventListener(`click`, documentClickHandler);
+    document.addEventListener(`keydown`, documentClickHandler);
   }
 
   function onErrorSendUserData(message) {
@@ -150,22 +150,22 @@
       messageTemplate.querySelector(`.error__message`).textContent = message;
     }
     document.querySelector(`main`).append(messageTemplate);
-    document.addEventListener(`click`, documentClickHandel);
-    document.addEventListener(`keydown`, documentClickHandel);
+    document.addEventListener(`click`, documentClickHandler);
+    document.addEventListener(`keydown`, documentClickHandler);
 
-    function documentClickHandel(evt) {
+    function documentClickHandler(evt) {
       if (evt.button === window.utils.LEFT_BUTTON_MOUSE_KEY_CODE || evt.keyCode === window.utils.ESC_KEY_CODE) {
         messageTemplate.remove();
-        document.removeEventListener(`click`, documentClickHandel);
-        document.removeEventListener(`keydown`, documentClickHandel);
+        document.removeEventListener(`click`, documentClickHandler);
+        document.removeEventListener(`keydown`, documentClickHandler);
       }
     }
 
-    document.addEventListener(`click`, documentClickHandel);
-    document.addEventListener(`keydown`, documentClickHandel);
+    document.addEventListener(`click`, documentClickHandler);
+    document.addEventListener(`keydown`, documentClickHandler);
   }
 
-  function handleSend(evt) {
+  function handlerSend(evt) {
     evt.preventDefault();
     const data = new FormData(formAd);
     sendUserData(data, onSuccesSendUserData, onErrorSendUserData);
@@ -184,8 +184,8 @@
 
   offerTypeInput.addEventListener(`input`, offerTypeRatioValidator);
   offerPriceInput.addEventListener(`input`, offerTypeRatioValidator);
-  resetBtn.addEventListener(`click`, resetFormHandel);
-  formAd.addEventListener(`submit`, handleSend);
+  resetBtn.addEventListener(`click`, resetFormHandler);
+  formAd.addEventListener(`submit`, handlerSend);
 
   window.form = {
     HEIGHT_NEEDLE_MAIN_PIN: 15,
