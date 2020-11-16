@@ -602,6 +602,12 @@ fieldset {
   border-radius: 4px;
 }
 
+.ad-form__element input:invalid,
+.ad-form__element select:invalid,
+.ad-form__element textarea:invalid {
+  border: 1px solid tomato;
+}
+
 .ad-form__element input:hover,
 .ad-form__element select:hover,
 .ad-form__element textarea:hover {
