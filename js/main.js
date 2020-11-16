@@ -1,2 +1,2 @@
 'use strict';
-window.map.setStatePage(true);
+window.map.setStatePage(false);
