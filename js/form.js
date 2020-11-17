@@ -4,7 +4,7 @@
   const formAd = document.querySelector(`.ad-form`);
   const fields = formAd.querySelectorAll(`fieldset`);
   const resetBtn = formAd.querySelector(`.ad-form__reset`);
-  const OfferTypeToMinPrice = {
+  const offerTypeToMinPrice = {
     palace: 10000,
     flat: 1000,
     house: 5000,
@@ -15,7 +15,7 @@
   function paintOrClearBorderField(field, toggle) {
     if (!toggle) {
       field.style.border = `2px solid tomato`;
-    } else if (toggle) {
+    } else {
       field.style.borderColor = ``;
     }
   }
@@ -24,8 +24,8 @@
     window.map.setStatePage(false);
   }
 
-  function enableDisabledFields(FieldsCollection, state = false) {
-    FieldsCollection.forEach((field) => {
+  function enableDisabledFields(fieldsCollection, state = false) {
+    fieldsCollection.forEach((field) => {
       field.disabled = !state;
     });
   }
@@ -43,9 +43,10 @@
   function roomsCapacityRatioValidHandler(evt) {
     const roomsValue = parseInt(roomsField.value, 10);
     const capacityValue = parseInt(capacityField.value, 10);
+    const currentSelectValueLive = roomsField.options[roomsField.selectedIndex].dataset.live;
 
-    if (roomsField.options[roomsField.selectedIndex].dataset.live === `false` || capacityValue === 0) {
-      if (roomsField.options[roomsField.selectedIndex].dataset.live === `false` && capacityValue === 0) {
+    if (currentValueLive === `false` || capacityValue === 0) {
+      if (currentValueLive === `false` && capacityValue === 0) {
         capacityField.setCustomValidity(``);
         roomsField.setCustomValidity(``);
         return;
@@ -83,7 +84,7 @@
   }
 
   function offerTypeRatioValidator() {
-    const minPrice = OfferTypeToMinPrice[offerTypeInput.value];
+    const minPrice = offerTypeToMinPrice[offerTypeInput.value];
     offerPriceInput.placeholder = String(minPrice);
 
     if (parseInt(offerPriceInput.value, 10) < minPrice) {
@@ -165,7 +166,7 @@
     document.addEventListener(`keydown`, documentClickHandler);
   }
 
-  function handlerSend(evt) {
+  function onFormAdSend(evt) {
     evt.preventDefault();
     const data = new FormData(formAd);
     sendUserData(data, onSuccesSendUserData, onErrorSendUserData);
@@ -184,7 +185,7 @@
   offerTypeInput.addEventListener(`input`, offerTypeRatioValidator);
   offerPriceInput.addEventListener(`input`, offerTypeRatioValidator);
   resetBtn.addEventListener(`click`, resetFormHandler);
-  formAd.addEventListener(`submit`, handlerSend);
+  formAd.addEventListener(`submit`, onFormAdSend);
 
   window.form = {
     HEIGHT_NEEDLE_MAIN_PIN: 15,

@@ -30,7 +30,7 @@
     });
   }
 
-  function getDeclinationlOfNum(number, titles) {
+  function getDeclinationOfNum(number, titles) {
     const CASES = [2, 0, 1, 1, 1, 2];
     return titles[(number % 100 > 4 && number % 100 < 20) ? 2 : CASES[(number % 10 < 5) ? number % 10 : 5]];
   }
@@ -74,7 +74,7 @@
       cardAddress.textContent = address;
       cardPrice.textContent = price;
       cardType.textContent = offerTypeToRu[type];
-      cardCapacity.textContent = `${rooms} ${getDeclinationlOfNum(parseInt(rooms, 10), [`комната`, `комнаты`, `комнат`])} для ${guests} ${getDeclinationlOfNum(parseInt(guests, 10), [`гость`, `гостей`, `гостей`])}`;
+      cardCapacity.textContent = `${rooms} ${getDeclinationOfNum(parseInt(rooms, 10), [`комната`, `комнаты`, `комнат`])} для ${guests} ${getDeclinationOfNum(parseInt(guests, 10), [`гость`, `гостей`, `гостей`])}`;
       cardTime.textContent = `Заезд после ${checkin}, выезд до ${checkout}`;
       cardDescription.textConten = description;
       cardAvatar.src = author.avatar;
