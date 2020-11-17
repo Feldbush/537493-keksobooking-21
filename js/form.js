@@ -45,8 +45,8 @@
     const capacityValue = parseInt(capacityField.value, 10);
     const currentSelectValueLive = roomsField.options[roomsField.selectedIndex].dataset.live;
 
-    if (currentValueLive === `false` || capacityValue === 0) {
-      if (currentValueLive === `false` && capacityValue === 0) {
+    if (currentSelectValueLive === `false` || capacityValue === 0) {
+      if (currentSelectValueLive === `false` && capacityValue === 0) {
         capacityField.setCustomValidity(``);
         roomsField.setCustomValidity(``);
         return;
