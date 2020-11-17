@@ -50,9 +50,9 @@
         roomsField.setCustomValidity(``);
         return;
       }
-      evt.currentTarget.setCustomValidity(`"Не для гостей" только не жилые помещения - "100 комнат"`);
+      roomsField.setCustomValidity(`"Не для гостей" только не жилые помещения - "100 комнат"`);
     } else if (roomsValue < capacityValue) {
-      evt.currentTarget.setCustomValidity(`Комнат не может быть меньше чем мест`);
+      roomsField.setCustomValidity(`Комнат не может быть меньше чем мест`);
     } else {
       capacityField.setCustomValidity(``);
       roomsField.setCustomValidity(``);
@@ -171,20 +171,6 @@
     sendUserData(data, onSuccesSendUserData, onErrorSendUserData);
   }
 
-  // function validatorForm() {
-  //   console.log(`ye`);
-  //   // Я столкнулся с тем, что обработчик не срабатывает если хотя бы одно поле на форме не валидно соответственно код ниже не отрабатывает
-  //   const fieldsets = formAd.querySelectorAll(`fieldset`);
-  //   fieldsets.forEach((field) => {
-  //     const input = field.querySelector(`input, select`);
-  //     console.log(`work`);
-  //     if (input) {
-  //       paintOrClearBorderField(input, input.reportValidity());
-  //     }
-  //   });
-  // }
-
-
   titleInput.addEventListener(`input`, offerTitleValidator);
 
   roomsField.addEventListener(`input`, roomsCapacityRatioValidHandler);
@@ -199,7 +185,6 @@
   offerPriceInput.addEventListener(`input`, offerTypeRatioValidator);
   resetBtn.addEventListener(`click`, resetFormHandler);
   formAd.addEventListener(`submit`, handlerSend);
-  // formAd.addEventListener(`invalid`, validatorForm, true);
 
   window.form = {
     HEIGHT_NEEDLE_MAIN_PIN: 15,

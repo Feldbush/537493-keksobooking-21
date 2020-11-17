@@ -1,9 +1,9 @@
 'use strict';
 
 (function () {
-  const TITLE_OFFER = [`Супер классный, новый, модный отель`, `Вот это отель`, `Гостиница так гостиница`];
-  const DESCRIPTION = [`Лучший отель на этой планете Лучший отель на этой планете Лучший отель на этой планете`, `Бомба БомбаБомбаБомбаБомбаБомбаБомба`, `Шикарно Шикарно Шикарно Шикарно`];
-  const OFFER_TYPE = [`palace`, `flat`, `house`, `bungalow`];
+  const TITLE_OFFERS = [`Супер классный, новый, модный отель`, `Вот это отель`, `Гостиница так гостиница`];
+  const DESCRIPTIONS = [`Лучший отель на этой планете Лучший отель на этой планете Лучший отель на этой планете`, `Бомба БомбаБомбаБомбаБомбаБомбаБомба`, `Шикарно Шикарно Шикарно Шикарно`];
+  const OFFER_TYPES = [`palace`, `flat`, `house`, `bungalow`];
   const MAX_QUANTITY_ROOMS = 5;
   const MAX_QUANTITY_GUEST = 7;
   const CHECKIN_TIMES = [`12:00`, `13:00`, `14:00`];
@@ -36,15 +36,15 @@
             avatar: `img/avatars/user0${index + 1}.png`
           },
           offer: {
-            title: getRandomElementArray(TITLE_OFFER),
+            title: getRandomElementArray(TITLE_OFFERS),
             price: getRandomInteger(1000, 4500),
-            type: getRandomElementArray(OFFER_TYPE),
+            type: getRandomElementArray(OFFER_TYPES),
             rooms: getRandomInteger(1, MAX_QUANTITY_ROOMS),
             guests: getRandomInteger(1, MAX_QUANTITY_GUEST),
             checkin: getRandomElementArray(CHECKIN_TIMES),
             checkout: getRandomElementArray(CHECKOUT_TIMES),
             features: FEATURES.slice(0, getRandomInteger(1, FEATURES.length - 1)),
-            description: getRandomElementArray(DESCRIPTION),
+            description: getRandomElementArray(DESCRIPTIONS),
             photos: PHOTOS_LINKS.slice(0, getRandomInteger(1, PHOTOS_LINKS.length - 1))
           },
           location: {
