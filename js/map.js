@@ -1,6 +1,8 @@
 'use strict';
 
 (function () {
+  const MAP_PIN_MAIN_TOP = 375;
+  const MAP_PIN_MAIN_LEFT = 570;
   const mainPin = document.querySelector(`.map__pin--main`);
 
   const mapNode = document.querySelector(`.map`);
@@ -36,8 +38,7 @@
   }
 
 
-  function dargAndDropHandlerMainPin(evt) {
-
+  function dragAndDropHandlerMainPin(evt) {
     let startCoords = {
       x: evt.clientX,
       y: evt.clientY
@@ -93,15 +94,15 @@
   }
 
   function appendPins(pinsData, placeInsertion) {
-    const temporaryСontainer = document.createDocumentFragment();
+    const temporaryContainer = document.createDocumentFragment();
     pinsData.forEach((pinData, index) => {
       let pin = window.pin.createPinNode(pinsData[index], pinsData[index].serialNumber);
       pin.addEventListener(`click`, pinHandler);
       pin.addEventListener(`keypress`, pinHandler);
-      temporaryСontainer.append(pin);
+      temporaryContainer.append(pin);
     });
 
-    placeInsertion.append(temporaryСontainer);
+    placeInsertion.append(temporaryContainer);
   }
 
   function insertBeforeNode(parentNode, insertedNode, nodeBeforeInsert) {
@@ -120,8 +121,13 @@
     document.body.insertAdjacentElement(`afterbegin`, node);
   }
 
+  const setMainPinCenter = function () {
+    mainPin.style.top = MAP_PIN_MAIN_TOP + `px`; // прописали стиль координат на данные с html
+    mainPin.style.left = MAP_PIN_MAIN_LEFT + `px`; // прописали стиль координат на данные с html
+  };
+
+  mainPin.addEventListener(`mousedown`, dragAndDropHandlerMainPin);
   mainPin.addEventListener(`mousedown`, mainPinHandler);
-  mainPin.addEventListener(`mousedown`, dargAndDropHandlerMainPin);
   mainPin.addEventListener(`keydown`, mainPinHandler);
 
   window.map = {
@@ -137,9 +143,16 @@
         },
         errorRequestHandler
         );
+
+        mainPin.removeEventListener(`mousedown`, mainPinHandler);
+        mainPin.removeEventListener(`keydown`, mainPinHandler);
       } else {
         window.map.clearPins();
+        window.map.closeCardsOffer();
         mapNode.classList.add(`map--faded`);
+        setMainPinCenter();
+        mainPin.addEventListener(`mousedown`, mainPinHandler);
+        mainPin.addEventListener(`keydown`, mainPinHandler);
       }
     },
     setStatePage(state = false) {

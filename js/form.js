@@ -10,7 +10,6 @@
     house: 5000,
     bungalow: 0
   };
-  const actionForm = `https://21.javascript.pages.academy/keksobooking`;
 
   function paintOrClearBorderField(field, toggle) {
     if (!toggle) {
@@ -97,33 +96,8 @@
     paintOrClearBorderField(offerPriceInput, offerPriceInput.reportValidity());
   }
 
-  function sendUserData(data, onSucces, onError, url = actionForm) {
-    const xhr = new XMLHttpRequest();
-
-    xhr.addEventListener(`load`, function () {
-      if (xhr.status === 200) {
-        onSucces(`Данные успешно отправлены`);
-      } else {
-        onError(`Непредвиденная ошибка`);
-      }
-    });
-
-    xhr.addEventListener(`error`, function () {
-      onError(`Произошла ошибка соединения`);
-    });
-
-    xhr.addEventListener(`timeout`, function () {
-      onError(`Запрос не успел выполниться за ` + xhr.timeout + `мс`);
-    });
-
-    xhr.timeout = window.utils.TIMEOUT_IN_MS;
-
-    xhr.open(`POST`, url);
-
-    xhr.send(data);
-  }
-
-  function onSuccesSendUserData(message) {
+  function onSuccessSendUserData(message) {
+    window.map.setStatePage(false);
     const messageTemplate = document.querySelector(`#success`).content.querySelector(`.success`).cloneNode(true);
     if (message) {
       messageTemplate.querySelector(`.success__message`).textContent = message;
@@ -137,7 +111,6 @@
         messageTemplate.remove();
         document.removeEventListener(`click`, documentClickHandler);
         document.removeEventListener(`keydown`, documentClickHandler);
-        window.map.setStatePage(false);
       }
     }
 
@@ -169,7 +142,7 @@
   function onFormAdSend(evt) {
     evt.preventDefault();
     const data = new FormData(formAd);
-    sendUserData(data, onSuccesSendUserData, onErrorSendUserData);
+    window.getData.sendUserData(data, onSuccessSendUserData, onErrorSendUserData);
   }
 
   titleInput.addEventListener(`input`, offerTitleValidator);
